@@ -4,7 +4,7 @@ from itertools import permutations
 POPULATION_SIZE = 100
 MUTATION_RATE = 0.1
 INT_MAX = 999999
-CITIES = 10
+CITIES = 8
 TESTS = 50
 GENERATIONS = 50
 # Distance matrix: distance_matrix[i][j] is the distance from city i to city j
