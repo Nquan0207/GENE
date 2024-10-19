@@ -1,11 +1,12 @@
 import random
+import time
 import numpy as np
 from itertools import permutations
 POPULATION_SIZE = 100
 MUTATION_RATE = 0.1
 INT_MAX = 999999
-CITIES = 8
-TESTS = 50
+CITIES = 10
+TESTS = 10
 GENERATIONS = 50
 # Distance matrix: distance_matrix[i][j] is the distance from city i to city j
 def create_graph(cities, min_dis, max_dis):
@@ -186,16 +187,27 @@ def random_selection(population):
     return random.choice(population)
 
 def roulette_wheel(population):
-    fitness_scores = [individual.fitness for individual in population]
+    ''' Choosing parent based on their fitness
+        The lower the fitness, the higher chance it get picked
+        The chance is proportional to the fitness
+        n is population size
+        Time complexity: O(3n)
+        Space complexity: O(2n)
+    '''
+    fitness_scores = [1/individual.fitness for individual in population]
     total_fitness = sum(fitness_scores)
-    roll = random.uniform(0, total_fitness)
-    cumulative_probability  = 0
-    for chromosome in population:
-        cumulative_probability += chromosome.fitness
-        if cumulative_probability >= roll:
-            return chromosome
+    probability_individual = [fitness/total_fitness for fitness in fitness_scores]
+    return np.random.choice(population, p=probability_individual)
         
 def rank_selection(population):
+    ''' Choosing parent based on their fitness
+        Assign each individual rank based on their fitness
+        The higher the fitness, the higher the rank, the higher the chance to get selected
+        The chance of getting selected is not propotional to the fitness
+        n is population size
+        Time complexity: O(n log n) + O(2n)
+        Space complexity: O(n)
+    '''
     population = sorted(population, key=lambda x: x.fitness, reverse=True)
     rank_sum = POPULATION_SIZE * (POPULATION_SIZE + 1) / 2
     probability = [i/rank_sum for i in range(1, POPULATION_SIZE + 1)]
@@ -207,6 +219,12 @@ def rank_selection(population):
             return population[i]
     
 def tournament_selection(population, k=10):
+    ''' Select k individuals from parents
+        Select the best individual from k
+        n is population size
+        Time complexity: O(1)
+        Space complexity: O(1)
+    '''
     start = random.randint(0, POPULATION_SIZE - k)
     end = start + k
     return min(population[start:end], key=lambda x: x.fitness)
@@ -263,6 +281,11 @@ def genetic_algorithm():
 
 
 def brute_force_algorithm():
+    ''' Check every path and choose the shortest path
+        n: number of cites
+        Time complexity: O(n!)
+        Space complexity: O(1)
+    '''
     min = INT_MAX
     min_path = []
     for path in (permutations(range(0, CITIES))):
@@ -285,13 +308,27 @@ def brute_force_algorithm():
 
 if __name__ == '__main__':
     correct_path = 0
+    brute_force_time_performance = 0
+    genetic_time_performance = 0
     for i in range(TESTS):
         random.seed(i)
         distance_matrix = create_graph(CITIES, 1, 10000)
+
+        gene_start = time.perf_counter()
         gene = genetic_algorithm()
-        #print(distance_matrix)
+        gene_end = time.perf_counter()
+        print(f"Genetic algorithm runtime: {gene_end - gene_start:0.5f} seconds")
+        genetic_time_performance += (gene_end - gene_start)
+
+        brute_force_start = time.perf_counter()
         brute_force = brute_force_algorithm()
+        brute_force_end = time.perf_counter()
+        print(f"Brute force algorithm runtime: {brute_force_end - brute_force_start:0.5f} seconds")
+        brute_force_time_performance += (brute_force_end - brute_force_start)
+
         if(gene == brute_force):
             correct_path+=1
 
-    print(f"Percentage of found path is shortest: {(correct_path/TESTS) * 100}%")
+    print(f"Percentage of correct path found by genetic algorithm: {(correct_path/TESTS) * 100}%")
+    print(f"Total brute force algorithm runtime: {brute_force_time_performance:0.5f} seconds")
+    print(f"Total genetic algorithm algorithm runtime: {genetic_time_performance:0.5f} seconds")
