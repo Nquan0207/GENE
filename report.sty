@@ -1,0 +1,267 @@
+\chapter{Introduction}
+\section{Background}
+\subsection{Genetic algorithm}
+Genetic algorithms are a powerful optimization technique inspired by the process of natural selection. First introduced by John Holland in 1975, they utilize the principles of evolution to generate multiple potential solutions to a given problem. The basic elements of genetic algorithm include:
+\begin{itemize}
+    \item {Individual:} A potential solution represented as a string of characters over a finite alphabet.
+    \item {Population:} A group of individuals that represents the current generation of solutions.
+    \item {Fitness function:} A measure that evaluates the quality or suitability of each individual based on its ability to solve the problem.
+    \item {Search space:} The entire set of possible solutions.
+    \item {Selection:} The process of choosing individuals from the current population to become parents for the next generation. This is typically based on their fitness values, with fitter individuals having a higher probability of being selected.
+    \item {Crossover:} A genetic operator that combines the genetic material (genes) of two parent individuals to create new offspring. This involves randomly selecting crossover points within the individuals' strings and swapping the corresponding segments.
+    \item {Mutation:} A genetic operator that introduces random changes to the genetic material of an individual. This can involve flipping bits, inserting or deleting genes, or other modifications. Mutation helps to maintain genetic diversity and prevent premature convergence to local optimal.
+\end{itemize}
+The procedure of genetic algorithm is as follows. First the initial population is initialized randomly. The fitness of each individual is computed through fitness function. We then select the top 10\% individuals based on their fitness for the new population. Two individuals are selected from the population based on their fitness value. The crossover function is applied to two parents to produce two offsprings. For all newly created individuals there is a probability near to zero that they will mutate. The two offsprings then get added into the new population. The selection, crossover, and mutation operations will be repeated on current population until the new population is complete. The new population is also introduced with 10\% randomly initialized of the population. The procedure of creating new population is repeated until until a termination criterion is met. This could be when a satisfactory solution is found, a maximum number of generations is reached, or a certain level of fitness is achieved.
+Algorithm 1 shows the pseudocode of genetic algorithm that is implemented in this project.
+\begin{algorithm}
+\caption{GENETIC-ALGORITHM}
+\begin{algorithmic}
+\State \textbf{Function} GENETIC-ALGORITHM(population, FITNESS-FN)
+\State \textbf{Input} 
+    \State population, a set of individuals
+    \State FITNESS-FN, a function that measures the fitness of an individual
+\Repeat
+    \State new population $\gets$ empty set
+    \For {i = 1 $\to$ SIZE(population)}
+        \State $x \gets$ SELECTION(population, FITNESS-FN)
+        \State $y \gets$ SELECTION(population, FITNESS-FN)
+        \State child1 $\gets$ REPRODUCE($x$, $y$)
+        \State child2 $\gets$ REPRODUCE($x$, $y$)
+    \EndFor
+    \If{(small random probability)}
+        \State child1 $\gets$ MUTATE(child)
+    \EndIf
+    \If{(small random probability)}
+        \State child2 $\gets$ MUTATE(child) 
+    \EndIf
+        \State add child1 to new population
+        \State add child2 to new population
+    \State population $\gets$ new population
+\Until {some individual is fit enough, or enough time has elapsed}
+\State \textbf{Return} the best individual in population, according to FITNESS-FN
+\end{algorithmic}
+\end{algorithm} 
+\subsection{Encoding scheme}
+In the context of the Traveling Salesman Problem (TSP), value encoding is a widely adopted representation technique. Each city is assigned a unique integer identifier. A solution, or chromosome, is a sequence of these integers, defining the order in which the salesman visits the cities. For example, the tour (0, 3, 2, 5, 4, 1) indicates that the salesman starts at city 0, then proceeds to city 3, followed by city 2, and so on.\\
+
+2D array can be used to efficiently present the cost matrix of a transportation network. Each row and column of the array corresponds to a specific city. The element at the intersection of row i and column j represents the cost of traveling from city i to city j. For example, if the element at position (2, 3) is 10, it means that the cost of traveling from city 2 to city 3 is 10 units.\\
+        \begin{figure}[h]
+        \centering 
+        \includegraphics[width=10cm]{Cost matrix.png} 
+        \caption{Cost matrix exmaple} 
+        %\label{fig:my_label} 
+        \end{figure}
+\section{Overview}
+The Traveling Salesman Problem (TSP) is a classic optimization problem where the goal is to find the shortest possible route that visits a set of cities exactly once and returns to the starting point. It is a well-known NP-hard problem in combinatorial optimization, meaning that as the number of cities increases, the complexity of finding an optimal solution grows exponentially.
+
+Many algorithms have been proposed to solve the TSP, including exact methods like dynamic programming and branch-and-bound, as well as heuristic and metaheuristic approaches, which are more practical for large-scale problems. One such metaheuristic approach is the Genetic Algorithm (GA), inspired by the principles of natural evolution.
+
+In this project, we explore the application of Genetic Algorithms (GA) to solve the TSP. GAs are particularly effective in tackling complex optimization problems like TSP due to their ability to search large solution spaces and escape local optima by using crossover, mutation, and selection processes. By simulating the process of natural selection, GA iteratively refines a population of candidate solutions until a satisfactory solution is found. 
+
+\section{Problem Statement}
+In this project, we will investigates the performance of the GA in solving the TSP for each of 45 (3 x 5 x 3) combinations between selection, crossover and mutation operators. The searches have
+been realized using the computer with 11th Gen Intel(R) Core(TM) i7-11700 @ 2.50 GHz CPU and 16 GB of RAM, under the Windows 10 64-bit operating system. Based on the result, we will figure it out which combinations and operators is best suited for The Traveling Salesman Problem.
+\section{Requirements and Objectives}
+
+\subsection{Requirements}
+
+
+
+\subsection{Objectives}
+
+\section{Outline}
+
+
+\chapter{Problem description}
+\section{Operators}
+\subsection{Selection operators}
+\subsubsection{Roulette wheel selection}
+Each individual will have the probability of being chosen based on there fitness value. The better the fitness, the higher the chance to get selected. The chance of getting is proportional to the fitness
+
+\begin{algorithm}
+\caption{Roulette wheel selection algorithm}
+\begin{algorithmic}
+\State \textbf{Function} roulette\_wheel(population)
+\State \textbf{Input} 
+    \State population, a set of individuals
+    \State \textbf{Start}
+    \State calculate total fitness score
+   \State assign each individual with the probability being chosen (fitness/total fitness score)
+    \State pick a random number from 0 to 1
+    \State cumulative\_probability $\gets$ 0
+    \For {i in range(0, POPULATION\_SIZE)}
+        \If{cumulative\_probability $\geq$ random number}
+            \State \textbf{Return} population[i]
+        \EndIf
+    \EndFor
+\end{algorithmic}
+\end{algorithm} 
+
+\subsubsection{Rank selection}
+All individual will be rank based on their fitnesss values. The better the fitness, the higher the rank and the chance to get selected
+
+\begin{algorithm}
+\caption{Rank selection algorithm}
+\begin{algorithmic}
+\State \textbf{Function} rank\_selection(population)
+\State \textbf{Input} 
+    \State population, a set of individuals
+    \State \textbf{Start}
+    \State sort population based on their fitness value in descending order.
+    \State rank each individual from worst to best as 1 to n
+    \State assign each individual with the probability being chosen (rank/sum of rank)
+    \State pick a random number from 0 to 1
+    \State cumulative\_probability $\gets$ 0
+    \For {i in range(0, POPULATION\_SIZE)}
+        \If{cumulative\_probability $\geq$ random number}
+            \State \textbf{Return} population[i]
+        \EndIf
+    \EndFor
+\end{algorithmic}
+\end{algorithm} 
+\newpage
+\subsubsection{Tournament selection}
+K random individuals is picked from the population. The individual with the best fitness will be returned.
+\begin{algorithm}
+\caption{Tournament selection algorithm}
+\begin{algorithmic}
+\State \textbf{Function} rank\_selection(population)
+\State \textbf{Input} 
+    \State population, a set of individuals
+    \State k, size of a tournament default is 10
+    \State \textbf{Start}
+    \State tournament $\gets$ empty set
+    \For {i in range(0, k)}
+        \State tournament $\gets$ random individual form population
+    \EndFor
+    \State \textbf{Return} min(tournament)
+\end{algorithmic}
+\end{algorithm} 
+\newpage
+\subsection{Crossover operators}
+\subsubsection{One point crossover}
+A random point is chosen in the chromosome. The genetic information of two parents which is beyond that point will be swapped with each other
+\begin{algorithm}
+\caption{One point crossover algorithm}
+\begin{algorithmic}
+\State \textbf{Function} one\_point\_crossover(parent1, parent2)
+\State \textbf{Input} 
+    \State parent1, an individual
+    \State parent2, an individual
+    \State \textbf{Start}
+    \State copy parents to child1, child2
+    \State choose a random point between 0 and len(chromosome) - 1
+    \State swap genetic information of 2 child beyond the point with each order
+    \State \textbf{Return} return 2 children after swapping
+\end{algorithmic}
+\end{algorithm} 
+\subsubsection{Uniform crossover}
+We randomly decide whether to swap genetic information in the same location between 2 parents
+\begin{algorithm}
+\caption{Uniform crossover algorithm}
+\begin{algorithmic}
+\State \textbf{Function} Uniform\_crossover(parent1, parent2)
+\State \textbf{Input} 
+    \State parent1, an individual
+    \State parent2, an individual
+    \State \textbf{Start}
+    \State copy parents to child1, child2
+    \For {i in range(len(parent1))}:
+        \If{small random probability}
+            \State swap child1[i], child2[i]
+        \EndIf
+    \EndFor
+    \State \textbf{Return} return 2 children after swapping
+\end{algorithmic}
+\end{algorithm} 
+\newpage
+\subsubsection{Cycle crossover}
+Identify cycles within the two parent chromosomes and swapping these cycles to create two new offspring. A cycle is a sequence of genes that are linked together through a specific pattern.
+\begin{algorithm}
+\caption{Cycle crossover algorithm}
+\begin{algorithmic}
+\State \textbf{Function} cycle\_crossover(parent1, parent2)
+\State \textbf{Input} 
+    \State parent1, an individual
+    \State parent1, an individual
+    \State \textbf{Start}
+    \State Visited ← empty set
+    \State StartIndex ← 0 
+    \State CurrentIndex ← StartIndex 
+    \State Child1 ← new empty chromosome of length Parent1
+    \State Child2 ← new empty chromosome of length Parent1
+    \While {CurrentIndex not in Visited}
+        \State Add CurrentIndex to Visited 
+        \State Child1[CurrentIndex] ← Parent1[CurrentIndex] 
+        \State Child2[CurrentIndex] ← Parent2[CurrentIndex] 
+        \State NextIndex ← Index of Parent1[CurrentIndex] in Parent2 
+        \State CurrentIndex ← NextIndex
+    \EndWhile
+    \For {i from 0 to len(Parent1) - 1}: 
+        \If {i not in Visited} 
+            \State Child1[i] ← Parent2[i] 
+            \State Child2[i] ← Parent1[i]
+        \EndIf
+    \EndFor
+    \State \textbf{Return} return 2 children after swapping
+\end{algorithmic}
+\end{algorithm} 
+\newpage
+\subsubsection{Partially matched crossover (PMX)}
+Selecting a random subset of genes from one parent and mapping them to the corresponding positions in the other parent. The remaining genes are then filled in using a specific mapping process.
+\begin{algorithm}
+\caption{Partially matched crossover (PMX) algorithm}
+\begin{algorithmic}
+\State \textbf{Function} PMX\_crossover(parent1, parent2)
+\State \textbf{Input} 
+    \State parent1, an individual
+    \State parent1, an individual
+    \State \textbf{Start}
+    \State Choose 2 random position index Start, End (Start < End)
+    \State Copy the genes from Start to End of partner1 to the corresponding positions in offspring 1.
+    \State Iterate through the remaining positions in offspring 1.
+    \For {each position}:
+        \State Get the corresponding gene from partner2.
+        \If {The gene is already in the crossover segment of offspring 1}
+            \State Find its mapping in partner1 and use that gene.
+        \EndIf
+        \State Assign the found gene to the current position in offspring 1.
+    \EndFor
+    \State Repeat the same process, but swap the roles of partner1 and partner2 to create child2.
+    \State \textbf{Return} return 2 children after swapping
+\end{algorithmic}
+\end{algorithm} 
+
+\subsubsection{Order crossover}
+Copy one (or more) parts of parent to the offspring from the selected cut-points and fills the remaining space with values other than the ones included in the copied section in order of the order parents.
+\begin{algorithm}
+\caption{Order algorithm}
+\begin{algorithmic}
+\State \textbf{Function} Order\_crossover(parent1, parent2)
+\State \textbf{Input} 
+    \State parent1, an individual
+    \State parent1, an individual
+    \State Choose 2 random position index Start, End (Start < End)
+    \State Child1 ← new empty chromosome of length Parent1
+    \State Child2 ← new empty chromosome of length Parent1 
+    \State \textbf{Map the subset}
+    \State child1[start:end+1] = partner1.chromosome[start:end+1] 
+    \State child2[start:end+1] = partner2.chromosome[start:end+1]
+    \For {i in range(Start, length Parent1 - 1)}:
+        \State fill the child1 the genes of Parent2 that not already in child1 and in the same order in Parent2
+
+        \State fill the child2 the genes of Parent1 that not already in child2 and in the same order in Parent1
+    \EndFor
+    \For {i in range(0, Start)}:
+        \State fill the child1 the genes of Parent2 that not already in child1 and in the same order in Parent2
+
+        \State fill the child2 the genes of Parent1 that not already in child2 and in the same order in Parent1
+    \EndFor
+    \State \textbf{Return} return 2 children after swapping
+\end{algorithmic}
+\end{algorithm} 
+\subsection{Mutation operators}
+\subsubsection{Swap mutation}
+Find two random points in the chromosome. The points are swapped between two parents to produce 2 offspring
+
+
